@@ -16,8 +16,6 @@ include(":gateway-service")
 project(":gateway-service").projectDir =
     file("gateway-service")
 
-include(":backend-service")
-include(":frontend-service")
 include(":common-domain")
 include(":common-utils")
 include(":common-controller")
