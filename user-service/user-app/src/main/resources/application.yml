@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: user-service
+  profiles:
+    active: default
+  config:
+    import: 'configserver:'
+  cloud:
+    config:
+      name: user-service
+      uri: http://localhost:8888
+      username: 'hshop-config-server-admin'
+      password: '{cipher}142e301067f324ed155c3e899a698421c22e7d88684fbb86d5c29da956ed157ce7d673190af81210dc7a65e62aa131a5'

@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    config:
+      allow-override: true
+      override-none: true
+  rabbitmq:
+    host: 192.168.50.141
+    port: 5672
+    username: guest
+    password: guest
+
+
+app:
+  jwt-secret: eddde0a8e37cbe95a28b54ca15da46f3ce534f7b00bc85f5a57a601d94498706
+  jwt-expiration-milliseconds: 604800000
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,mappings,busrefresh,busenv

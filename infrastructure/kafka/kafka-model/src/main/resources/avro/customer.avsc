@@ -1,0 +1,32 @@
+{
+  "namespace": "net.philipheur.hshop.infrastructure.kafka.model.avro",
+  "type": "record",
+  "name": "CustomerAvroModel",
+  "fields": [
+    {
+      "name": "id",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "email",
+      "type": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "firstName",
+      "type": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "lastName",
+      "type": {
+        "type": "string"
+      }
+    }
+  ]
+}

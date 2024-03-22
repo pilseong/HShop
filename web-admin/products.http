@@ -1,0 +1,70 @@
+http://localhost:8080/roles
+
+###
+POST http://localhost:8080/api/users/new
+Content-Type: application/json
+
+{
+    "lastName": "",
+    "firstName": "",
+    "email": "heops79@gmail.com",
+    "password": "",
+    "enabled": false,
+    "roles": [
+        "59dcad3a-2004-4fb3-82ac-33ca238bb6c2",
+        "6a07454a-960b-4d2d-8a90-6ebe9a5439c9"
+    ]
+}
+
+###
+POST http://localhost:8080/api/users/one
+Content-Type: application/json
+
+{
+    "userId": "b5e8492f-a089-481b-b779-74a82cbf6b0c",
+    "keyword": ""
+}
+
+###
+POST http://localhost:8080/api/users/edit
+Content-Type: application/json
+
+{
+    "id": "yrdy",
+    "lastName": "",
+    "firstName": "",
+    "email": "heops79@gmail.com",
+    "password": "",
+    "enabled": false,
+    "roles": [
+        "59dcad3a-2004-4fb3-82ac-33ca238bb6c2",
+        "6a07454a-960b-4d2d-8a90-6ebe9a5439c9"
+    ]
+}
+
+###
+POST http://localhost:8080/api/users/edit
+Content-Type: application/json
+
+{
+    "id": "406d8ca4-7137-4656-a965-70c8a28f9b61",
+    "email": "test@test.com",
+    "firstName": "first",
+    "lastName": "last",
+    "photo": "",
+    "enabled": false,
+    "roles": [
+        "c44a8fd4-992d-406d-91dc-a418aee042f1"
+    ],
+    "failureMessage": [],
+    "password": ""
+}
+
+####
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+    "userId": "9b93b0f0-7a18-4e8a-9b2e-cb501e7394a3",
+    "keyword": ""
+}

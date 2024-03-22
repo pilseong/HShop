@@ -1,0 +1,58 @@
+server:
+  port: ${PORT:0}
+
+logging:
+  level:
+    web: DEBUG
+
+spring:
+  application:
+    name: settings-service
+
+  mvc:
+    static-path-pattern: '/photos/**'
+
+  web:
+    resources:
+      #       static-locations: 'classpath:/anything'
+      static-locations: 'file:/Users/philipheur/practice/gradle/HShop/photos/settings'
+
+  devtools:
+    restart:
+      enabled: true
+
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  #    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+  #    properties:
+  #      hibernate:
+  #        dialect: org.hibernate.dialect.PostgreSQL9Dialect
+  datasource:
+    url: jdbc:postgresql://192.168.50.141:5433/hshop?currentSchema=setting&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
+    username: postgres
+    password: qwe123
+    driver-class-name: org.postgresql.Driver
+    platform: postgres
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  thymeleaf:
+    check-template-location: false
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8010/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+
+#    init:
+#      mode: ALWAYS
+#      schema-locations: classpath:init-schema.sql

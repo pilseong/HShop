@@ -1,0 +1,25 @@
+object Versions {
+    const val SPRING_BOOT = "3.2.3"
+    const val SPRING = "6.1.4"
+    const val SPRING_SECURITY = "6.2.2"
+    const val KOTLIN = "1.9.22"
+    const val JACKSON_KOTLIN = "2.16.1"
+    const val LOMBOK = "1.18.30"
+    const val JUNIT_JUPITER = "5.10.2"
+    const val MOKITO_KOTLIN = "5.0.0"
+    const val COMMON_TEXT = "1.10.0"
+    const val COMMON_IO = "2.15.1"
+    const val POSTGRESQL = "42.6.0"
+    const val KAFKA_AVRO_SERIALIZER = "7.5.1"
+    const val SPRING_KAFKA = "3.1.1"
+    const val SPRING_CLOUD = "2023.0.0"
+    const val WEBJARS_BOOTSTRAP = "4.3.1"
+    const val WEBJARS_JQUERY = "3.4.1"
+    const val H2_DATABASE = "2.2.224"
+    const val MYSQL_CONNECTOR = "8.0.33"
+    const val OPEN_CSV = "5.9"
+    const val JJWT = "0.12.5"
+    const val RESILIENCE4J = "2.2.0"
+
+
+}

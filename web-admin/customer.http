@@ -1,0 +1,30 @@
+
+####
+POST http://localhost:8080/customer-service/api/customers
+Content-Type: application/json
+
+{
+    "username": "test",
+    "firstName": "first",
+    "lastName": "last"
+}
+
+
+####
+POST http://localhost:8080/customer-service/api/customers/login
+Content-Type: application/json
+
+{
+    "email": "heops79@gmail.com",
+    "password": "qwe123"
+}
+
+
+####
+GET http://localhost:8080/customer-service/actuator/mappings
+Content-Type: application/json
+
+
+####
+GET http://localhost:8080/customer-service/api/customers?pageNo=0&pageSize=10&sortBy=firstName&orderBy=asc
+Content-Type: application/json

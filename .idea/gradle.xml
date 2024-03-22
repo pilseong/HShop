@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/buildSrc" name="buildSrc">
+                <projects>
+                  <project path="$PROJECT_DIR$/buildSrc" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleHome" value="" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/backend-service" />
+            <option value="$PROJECT_DIR$/buildSrc" />
+            <option value="$PROJECT_DIR$/cart-service/cart-app" />
+            <option value="$PROJECT_DIR$/cart-service/cart-controller" />
+            <option value="$PROJECT_DIR$/cart-service/cart-dataaccess" />
+            <option value="$PROJECT_DIR$/cart-service/cart-domain/cart-domain-core" />
+            <option value="$PROJECT_DIR$/cart-service/cart-domain/cart-domain-service" />
+            <option value="$PROJECT_DIR$/cart-service/cart-messaging" />
+            <option value="$PROJECT_DIR$/catalog-service/catalog-app" />
+            <option value="$PROJECT_DIR$/catalog-service/catalog-controller" />
+            <option value="$PROJECT_DIR$/catalog-service/catalog-dataaccess" />
+            <option value="$PROJECT_DIR$/catalog-service/catalog-domain/catalog-domain-core" />
+            <option value="$PROJECT_DIR$/catalog-service/catalog-domain/catalog-domain-service" />
+            <option value="$PROJECT_DIR$/common/common-controller" />
+            <option value="$PROJECT_DIR$/common/common-domain" />
+            <option value="$PROJECT_DIR$/common/common-utils" />
+            <option value="$PROJECT_DIR$/config-server" />
+            <option value="$PROJECT_DIR$/customer-service/customer-app" />
+            <option value="$PROJECT_DIR$/customer-service/customer-controller" />
+            <option value="$PROJECT_DIR$/customer-service/customer-dataaccess" />
+            <option value="$PROJECT_DIR$/customer-service/customer-domain/customer-domain-core" />
+            <option value="$PROJECT_DIR$/customer-service/customer-domain/customer-domain-service" />
+            <option value="$PROJECT_DIR$/customer-service/customer-messaging" />
+            <option value="$PROJECT_DIR$/discovery-service" />
+            <option value="$PROJECT_DIR$/frontend-service" />
+            <option value="$PROJECT_DIR$/gateway-service" />
+            <option value="$PROJECT_DIR$/infrastructure/kafka/kafka-config-data" />
+            <option value="$PROJECT_DIR$/infrastructure/kafka/kafka-consumer" />
+            <option value="$PROJECT_DIR$/infrastructure/kafka/kafka-model" />
+            <option value="$PROJECT_DIR$/infrastructure/kafka/kafka-producer" />
+            <option value="$PROJECT_DIR$/settings-service/settings-app" />
+            <option value="$PROJECT_DIR$/settings-service/settings-controller" />
+            <option value="$PROJECT_DIR$/settings-service/settings-dataaccess" />
+            <option value="$PROJECT_DIR$/settings-service/settings-domain/settings-domain-core" />
+            <option value="$PROJECT_DIR$/settings-service/settings-domain/settings-domain-service" />
+            <option value="$PROJECT_DIR$/user-service/user-app" />
+            <option value="$PROJECT_DIR$/user-service/user-controller" />
+            <option value="$PROJECT_DIR$/user-service/user-dataaccess" />
+            <option value="$PROJECT_DIR$/user-service/user-domain/user-domain-core" />
+            <option value="$PROJECT_DIR$/user-service/user-domain/user-domain-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

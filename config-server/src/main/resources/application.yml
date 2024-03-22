@@ -1,0 +1,38 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: configserver
+  profiles:
+    active: native
+  cloud:
+    bus:
+      enabled: true
+    config:
+      server:
+        native:
+          search-locations: file://${user.home}/practice/gradle/HShop/config-repo
+
+  security:
+    user:
+      name: 'hshop-config-server-admin'
+      password: '{cipher}142e301067f324ed155c3e899a698421c22e7d88684fbb86d5c29da956ed157ce7d673190af81210dc7a65e62aa131a5'
+
+  rabbitmq:
+    host: 192.168.50.141
+    port: 5672
+    username: guest
+    password: guest
+
+logging:
+  level:
+    ROOT: info
+    org.spring.framework.cloud.config: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: busrefresh,busenv
+

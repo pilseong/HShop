@@ -1,0 +1,33 @@
+*.icon-white {
+    color: white
+}
+
+*.icon-sliver {
+    color: silver
+}
+
+*.icon-green {
+    color: green
+}
+
+*.icon-gray {
+    color: gray
+}
+
+.page-link:focus {
+    box-shadow: none !important;
+    border-color: transparent !important;
+    /* color: transparent !important; */
+}
+
+/* .pagination .page-item .page-link {
+    border-radius: 0 !important;
+    color: black;
+} */
+
+/* .pagination .page-link {
+    border-top-style: none !important;
+    border-bottom-style: none !important;
+    border-left-style: none !important;
+    border-right-style: none !important;
+} */

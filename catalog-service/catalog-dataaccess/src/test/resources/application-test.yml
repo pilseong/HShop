@@ -1,0 +1,40 @@
+server:
+  port: 9090
+
+logging:
+  level:
+    ROOT: info
+
+spring:
+#  jpa:
+#    open-in-view: false
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+  #    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+  #    properties:
+  #      hibernate:
+  #        dialect: org.hibernate.dialect.PostgreSQL9Dialect
+  jpa:
+    database: h2
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        default_schema: metering
+        connection:
+          url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS catalog;NON_KEYWORDS=VALUE
+      username: sa
+      password:
+
+#  datasource:
+#    url: jdbc:postgresql://192.168.50.141:5433/hshop?currentSchema=catalog&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
+#    username: postgres
+#    password: qwe123
+#    driver-class-name: org.postgresql.Driver
+#    platform: postgres
+#  sql:
+#    init:
+#      mode: ALWAYS
+#      schema-locations: classpath:init-schema.sql
