@@ -5,7 +5,7 @@
 #### Client
  - Vite, React, RTK
 #### Server
- - Kotlin, SpringBoot 3
+ - Kotlin, SpringBoot 3, PostgreSQL, Kafka
 
 
 ### Microservice 목록
