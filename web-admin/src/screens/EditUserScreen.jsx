@@ -39,7 +39,7 @@ function EditUserScreen() {
 
     const [files, setFiles] = useState([])
     const [photoUpdated, setPhotoUpdated] = useState(false)
-    const server_url = import.meta.REACT_APP_SERVER_URL
+    const server_url = import.meta.env.VITE_BASE_URL
 
     const [getUser, { isLoading: getUserLoading }] = useGetUserDetailsMutation()
     // const [editUser, { isLoading: editUserLoading }] = useEditUserMutation()

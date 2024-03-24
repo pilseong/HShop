@@ -13,7 +13,7 @@ import HomeScreen from './screens/HomeScreen';
 
 import { Provider } from 'react-redux';
 import store from './store';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/style.css'
 import {
   createBrowserRouter,
@@ -24,6 +24,13 @@ import {
 import LoginScreen from './screens/LoginScreen';
 import PrivateRoute from './components/PrivateRoute';
 import SettingsListScreen from './screens/SettingsListScreen';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import { ThemeProvider } from '@mui/material';
+import { theme } from './theme'
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -49,7 +56,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router}></RouterProvider>
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={router}></RouterProvider>
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>
 );

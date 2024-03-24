@@ -1,24 +1,23 @@
-import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap'
-import { FaShoppingCart, FaUser } from 'react-icons/fa'
-import { SiBrandfolder } from "react-icons/si";
-import { MdCategory } from "react-icons/md";
-import { FaUserGroup } from "react-icons/fa6";
-import { MdOutlineProductionQuantityLimits } from "react-icons/md";
-import { AiFillCustomerService } from "react-icons/ai";
-import { BiPurchaseTag } from "react-icons/bi";
-import { FaShippingFast } from "react-icons/fa";
-import { MdArticle } from "react-icons/md";
-import { FcSalesPerformance } from "react-icons/fc";
-import { CiSettings } from "react-icons/ci";
+import React from 'react'
 import { LinkContainer } from 'react-router-bootstrap'
 import logo from '../assets/hshop.jpeg'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../slices/authSlice'
 import { useLogoutMutation } from '../slices/usersApiSlice';
+import { AppBar, Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography, styled } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu'
+
+const Brand = styled('div')(({ theme }) => ({
+    display: "none",
+    [theme.breakpoints.up("md")]: {
+        display: "flex"
+    },
+    marginRight: 20
+}))
+
 
 function Header() {
-
     const { userInfo } = useSelector(state => state.auth)
 
     const dispatch = useDispatch()
@@ -27,109 +26,208 @@ function Header() {
 
     const logoutHandler = async () => {
         try {
+            handleCloseNavMenu()
+            handleCloseUserMenu()
             const res = await logoutApi()
             dispatch(logout())
             navigate('/login')
-
             return
         } catch (error) {
             console.log(error)
         }
     }
 
+    const [anchorElNav, setAnchorElNav] = React.useState(null);
+    const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+    const handleOpenNavMenu = (event) => {
+        setAnchorElNav(event.currentTarget);
+    };
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUser(event.currentTarget);
+    };
+
+    const handleCloseNavMenu = () => {
+        setAnchorElNav(null);
+    };
+
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
+
+    // 나중에 DB에서 불러 오도록 수정
+    const pages = [
+        {
+            name: "Users",
+            link: "/users"
+        },
+        {
+            name: "Categories",
+            link: "/categories"
+        },
+        {
+            name: "Brands",
+            link: "/brands"
+        },
+        {
+            name: "Products",
+            link: "/products"
+        },
+        {
+            name: "Customers",
+            link: "/customers"
+        },
+        {
+            name: "Orders",
+            link: "/orders"
+        },
+        {
+            name: "Shipping",
+            link: "/shipping"
+        },
+        {
+            name: "Sales Report",
+            link: "/reports"
+        },
+        {
+            name: "Settings",
+            link: "/settings"
+        },
+    ]
+
+
     return (
-        <header>
-            <Navbar bg="dark" variant="dark" expand="md" collapseOnSelect>
-                <Container>
-                    <LinkContainer to="/">
-                        <Navbar.Brand>
-                            <img src={logo} alt="HShop" />
-                        </Navbar.Brand>
-                    </LinkContainer>
-                    <Navbar.Toggle aria-controls='basic-navbar-nav' />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className='ms-auto'>
-                            {
-                                userInfo && (
-                                    <>
-                                        {userInfo.roles.split(',').findIndex(role => role === 'Admin') >= 0 && (
-                                            <LinkContainer to="/users">
-                                                <Nav.Link>
-                                                    <FaUserGroup /> Users
-                                                </Nav.Link>
-                                            </LinkContainer>
-                                        )}
-                                        <LinkContainer to="/categories">
-                                            <Nav.Link>
-                                                <MdCategory /> Categories
-                                            </Nav.Link>
-                                        </LinkContainer>
-                                        <LinkContainer to="/brands">
-                                            <Nav.Link>
-                                                <SiBrandfolder /> Brands
-                                            </Nav.Link>
-                                        </LinkContainer>
-                                        <LinkContainer to="/products">
-                                            <Nav.Link>
-                                                <MdOutlineProductionQuantityLimits /> Products
-                                            </Nav.Link>
-                                        </LinkContainer>
-                                        <LinkContainer to="/customers">
-                                            <Nav.Link>
-                                                <AiFillCustomerService /> Customers
-                                            </Nav.Link>
-                                        </LinkContainer>
-                                        <LinkContainer to="/cart">
-                                            <Nav.Link>
-                                                <FaShippingFast /> Shipping
-                                            </Nav.Link>
-                                        </LinkContainer>
-                                        <LinkContainer to="/cart">
-                                            <Nav.Link>
-                                                <BiPurchaseTag /> Orders
-                                            </Nav.Link>
-                                        </LinkContainer>
-                                        <LinkContainer to="/cart">
-                                            <Nav.Link>
-                                                <FcSalesPerformance /> Sales Report
-                                            </Nav.Link>
-                                        </LinkContainer>
-                                        <LinkContainer to="/cart">
-                                            <Nav.Link>
-                                                <MdArticle /> Articles
-                                            </Nav.Link>
-                                        </LinkContainer>
-                                        <LinkContainer to="/settings">
-                                            <Nav.Link>
-                                                <CiSettings /> Settings
-                                            </Nav.Link>
-                                        </LinkContainer>
-                                    </>
-                                )}
-                            {userInfo ? (
-                                <NavDropdown title={userInfo.firstName} id="username">
-                                    <LinkContainer to='/profile'>
-                                        <NavDropdown.Item>Profile</NavDropdown.Item>
+        <AppBar position="static">
+            <Container maxWidth="xl">
+                <Toolbar disableGutters>
+                    <Brand><img src={logo} /></Brand>
+                    {userInfo &&
+                        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                size="large"
+                                aria-haspopup="true"
+                                onClick={handleOpenNavMenu}
+                                color="inherit"
+                            >
+                                <MenuIcon />
+                            </IconButton>
+
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorElNav}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                }}
+                                open={Boolean(anchorElNav)}
+                                onClose={handleCloseNavMenu}
+                                sx={{
+                                    display: { xs: 'block', md: 'none' },
+                                }}
+                            >
+                                {pages.map(page => (
+                                    <LinkContainer key={page.name} to={page.link}>
+                                        <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                                            <Typography textAlign="center">{page.name}</Typography>
+                                        </MenuItem>
                                     </LinkContainer>
-                                    <LinkContainer to='/login'>
-                                        <NavDropdown.Item
-                                            onClick={logoutHandler}
-                                        >Logout</NavDropdown.Item>
+                                ))}
+                            </Menu>
+                        </Box>
+                    }
+                    <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
+                        <img src={logo} />
+                    </Box>
+                    <Typography
+                        variant="h5"
+                        noWrap
+                        component="a"
+                        href="#app-bar-with-responsive-menu"
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'flex', md: 'none' },
+                            flexGrow: 1,
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        HSHOP
+                    </Typography>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                        {userInfo && pages.map(page => (
+                            <LinkContainer key={page.name} to={page.link}>
+                                <Button
+                                    key={page.name}
+                                    onClick={handleCloseNavMenu}
+                                    sx={{ my: 2, color: 'white', display: 'block' }}
+                                >
+                                    {page.name}
+                                </Button>
+                            </LinkContainer>
+
+                        ))}
+                    </Box>
+
+                    <Box sx={{ flexGrow: 0 }}>
+                        {userInfo ? (
+                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                <Avatar alt={userInfo.profile.firstName}
+                                    src={userInfo?.profile?.photo && `http://localhost:8080/user-service/photos/${userInfo?.profile?.id}/${userInfo?.profile?.photo}`}>
+                                    {userInfo.profile.firstName.charAt(0)}
+                                </Avatar>
+
+
+                            </IconButton>
+                        ) : (
+                            <Box>Register</Box>
+                        )}
+
+                        <Menu
+                            sx={{ mt: '45px' }}
+                            id="menu-appbar"
+                            anchorEl={anchorElUser}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorElUser)}
+                            onClose={handleCloseUserMenu}
+                        >
+                            {userInfo && (
+                                [
+                                    <LinkContainer key="profile" to="/profile">
+                                        <MenuItem key="profile" onClick={handleCloseUserMenu}>
+                                            <Typography textAlign="center">Profile</Typography>
+                                        </MenuItem>
+                                    </LinkContainer>,
+                                    <LinkContainer key="logout" to="/login">
+                                        <MenuItem key="logout" onClick={logoutHandler}>
+                                            <Typography textAlign="center">Logout</Typography>
+                                        </MenuItem>
                                     </LinkContainer>
-                                </NavDropdown>
-                            ) : (
-                                <LinkContainer to="/login">
-                                    <Nav.Link>
-                                        <FaUser /> Sign in
-                                    </Nav.Link>
-                                </LinkContainer>
+                                ]
                             )}
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-        </header >
-    )
+
+
+                        </Menu>
+                    </Box>
+                </Toolbar>
+            </Container>
+        </AppBar>
+    );
 }
 
 export default Header

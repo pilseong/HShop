@@ -1,18 +1,17 @@
+import { Box, Container, Typography } from '@mui/material'
 import React from 'react'
-import { Col, Container, Row } from 'react-bootstrap'
+
 
 function Footer() {
     const currentYear = new Date().getFullYear()
     return (
         <footer>
             <Container>
-                <Row>
-                    <Col className='text-center py-3'>
-                        <div>HShop &copy; {currentYear}</div>
-                    </Col>
-                </Row>
+                <Box textAlign="center" my={5}>
+                    <Typography variant='h6'>HShop &copy; {currentYear}</Typography>
+                </Box>
             </Container>
-        </footer>
+        </footer >
     )
 }
 

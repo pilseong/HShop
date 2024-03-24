@@ -358,7 +358,7 @@ function ProductListScreen() {
                                 (lastPage <= 5 || currentPage <= 2) &&
                                 [...Array(lastPage > 5 ? 5 : lastPage).keys()]
                                     .map(index => (
-                                        <Pagination.Item
+                                        <Pagination.Item key={`page-${index}`}
                                             active={index === currentPage}
                                             onClick={() => navigatePage(index)}
                                         >{index + 1}</Pagination.Item>
@@ -369,7 +369,7 @@ function ProductListScreen() {
                                 (lastPage > 5 && currentPage > 2 && lastPage - currentPage > 3) &&
                                 [...Array(5).keys()]
                                     .map(index => (
-                                        <Pagination.Item
+                                        <Pagination.Item key={`page-${index}`}
                                             active={index + currentPage - 2 === currentPage}
                                             style={{
                                                 style: "none"
@@ -385,7 +385,7 @@ function ProductListScreen() {
                                 (lastPage > 5 && lastPage - currentPage <= 3) &&
                                 [...Array(5).keys()]
                                     .map(index => (
-                                        <Pagination.Item
+                                        <Pagination.Item key={`page-${index}`}
                                             active={lastPage - 5 + index === currentPage}
                                             onClick={() => navigatePage(lastPage - 5 + index)}
                                         >{lastPage - 5 + index + 1}</Pagination.Item>

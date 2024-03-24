@@ -1,13 +1,15 @@
+import { Box, Button, Typography } from '@mui/material'
 import React from 'react'
-import { Button } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 function HomeScreen() {
     return (
         <>
-            <h1>HomeScreen</h1>
+            <Typography variant='h3' m={5}>HomeScreen</Typography>
             <LinkContainer to="/users/new">
-                <Button type="button">Create User</Button>
+                <Box m={5}>
+                    <Button type="button">Create User</Button>
+                </Box>
             </LinkContainer>
         </>
     )

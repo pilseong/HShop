@@ -40,7 +40,6 @@ function LoginScreen() {
             console.log(document.cookie)
         } catch (error) {
             console.log(error)
-            // toast.error(error?.data?.message || error.error)
         }
     }
 

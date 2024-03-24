@@ -366,7 +366,7 @@ function SettingsListScreen() {
                                         }}>
                                         {currencies?.content &&
                                             currencies.content.map(currency => (
-                                                <option
+                                                <option key={currency.id}
                                                     value={`${currency.language},${currency.country}`}
                                                     selected={
                                                         `${currency.language},${currency.country}` ===
@@ -505,7 +505,8 @@ function SettingsListScreen() {
                     <select className="form-select" size="10">
                         {
                             countries?.map((c, index) => (
-                                <option selected={country && c.id === country.id}
+                                <option key={c.id}
+                                    selected={country && c.id === country.id}
                                     onClick={() => {
                                         setCountry(c)
                                         setCountryEditMode('selected')

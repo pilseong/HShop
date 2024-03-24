@@ -1,21 +1,22 @@
 import React from 'react'
-import { Alert, Button, Col, Form, Image, Modal, Pagination, Row, Table } from 'react-bootstrap'
+import { Alert, Col, Form, Image, Modal, Pagination, Row, Table } from 'react-bootstrap'
 import { useEffect, useState } from 'react'
-import { RiCheckboxCircleFill } from "react-icons/ri";
-import { RiCheckboxBlankCircleLine } from "react-icons/ri";
-import { TbMinusVertical } from "react-icons/tb";
-import { FaEdit } from "react-icons/fa";
-import { FaPortrait } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-import { BiSolidUpArrow } from "react-icons/bi";
-import { BiSolidDownArrow } from "react-icons/bi";
 import axios from 'axios'
-import { LinkContainer } from 'react-router-bootstrap';
 import Message from '../util/Message'
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useGetUsersMutation } from '../slices/usersApiSlice';
+import { Button, Container, InputBase, TableContainer, TablePagination, Toolbar, Typography, styled } from '@mui/material';
+import { Box, margin } from '@mui/system';
+import EnhancedTable from '../components/EnhancedTable';
+import Loader from '../components/Loader';
 
+const Search = styled(Box)(() => ({
+    backgroundColor: "#eee",
+    padding: "0 10px",
+    borderRadius: 1,
+    width: "100%"
+}))
 
 function UserListScreen() {
 
@@ -23,13 +24,13 @@ function UserListScreen() {
     const [targetUser, setTargetUser] = useState({})
     const [message, setMessage] = useState("")
     const [currentPage, setCurrentPage] = useState(0)
+    const [total, setTotal] = useState(0)
+    const [pageSize, setPageSize] = useState(0)
     const [lastPage, setLastPage] = useState(0)
     const [orderBy, setOrderBy] = useState('asc')
     const [sortBy, setSortBy] = useState('email')
     const [keyword, setKeyword] = useState("")
     const [cleared, setCleared] = useState(0)
-
-    const { userInfo } = useSelector(state => state.auth)
 
     // 유저리스트
     const [users, setUsers] = useState([])
@@ -50,16 +51,15 @@ function UserListScreen() {
 
     const [getUsers, { isLoading }] = useGetUsersMutation()
 
-
     const server_url = import.meta.env.VITE_BASE_URL
 
 
-    const fetchUsers = async (page = 0, order = 'asc', sort = 'email') => {
+    const fetchUsers = async (page = 0, order = 'asc', sort = 'email', size = 10) => {
         try {
             const response = await getUsers({
                 keyword: keyword,
                 pageNo: page,
-                pageSize: 10,
+                pageSize: size,
                 sortBy: sort,
                 orderBy: order
             })
@@ -69,10 +69,13 @@ function UserListScreen() {
             }
 
             const { data } = response
+            console.log(data)
             setUsers(data.users)
             setCurrentPage(data.pageNo)
             setLastPage(data.totalPages)
             setOrderBy(order)
+            setPageSize(data.pageSize)
+            setTotal(data.totalElements)
             setSortBy(sort)
 
         } catch (error) {
@@ -189,8 +192,9 @@ function UserListScreen() {
         //     // setUsers(updatedUsers)
     }
 
-    const navigatePage = (page) => {
-        fetchUsers(page, orderBy, sortBy)
+    const navigatePage = (page, size = pageSize) => {
+        setPageSize(size)
+        fetchUsers(page, orderBy, sortBy, size)
     }
 
     const showMessage = (msg) => {
@@ -199,246 +203,144 @@ function UserListScreen() {
         setTimeout(() => {
             setMessage("");
         }, 3000);
-
     }
+
+
     return (
         <>
-            <h1 className='mb-5'>User Lists</h1>
-            <Row className='d-flex mb-2' md={3}>
-                <Form.Group as={Col}>
-                    <Form.Control
-                        type="search"
-                        aria-describedby="search input field"
-                        placeholder='Enter keyword to search'
-                        onKeyDown={e => {
-                            if (e.key === 'Enter') {
-                                fetchUsers(0, 'asc', 'email')
-                            }
-                        }}
-                        onChange={e => {
-                            setKeyword(e.target.value)
-                        }}
-                        value={keyword}
-                    />
-                </Form.Group>
-                <Col className='d-flex me-auto' md={1}>
-                    <Button onClick={() => fetchUsers(0, 'asc', 'email')}>Search</Button>
-                    <Button className='ms-2' variant='secondary'
-                        onClick={() => {
-                            setKeyword('')
-                            setCleared(cleared + 1)
+            {
+                isLoading ? (<Loader />) : (
+                    <Container maxWidth="xl">
+                        <Typography variant='h3' my={3}>User Lists</Typography>
+
+                        <Toolbar sx={{
+                            display: "flex",
+                            justifyContent: "space-between"
+                        }}>
+                            <Box sx={{ display: "flex", flexGrow: 4 }}>
+                                <Search mr={1}>
+                                    <InputBase
+                                        onKeyDown={e => {
+                                            if (e.key === 'Enter') {
+                                                fetchUsers(0, 'asc', 'email')
+                                            }
+                                        }}
+                                        onChange={e => {
+                                            setKeyword(e.target.value)
+                                        }}
+                                        value={keyword}
+                                        placeholder='Enter keyword' />
+                                </Search>
+                                <Button size='small'
+                                    onClick={() => fetchUsers(0, 'asc', 'email')}
+                                    variant='contained' sx={{ marginRight: 1 }}>Search</Button>
+                                <Button size='small'
+                                    onClick={() => {
+                                        setKeyword('')
+                                        setCleared(cleared + 1)
+                                    }}
+                                    variant='contained'>Clear</Button>
+                            </Box>
+                            <Box sx={{ flexGrow: 6 }} textAlign={'end'}>
+                                <Link to="/users/new">
+                                    <Button size='small' variant='contained'>Create User</Button>
+                                </Link>
+                            </Box>
+
+                        </Toolbar >
+
+                        {
+                            error?.code && (
+                                <Message variant='danger' className='mt-2'>
+                                    <Form.Text className="text-muted">
+                                        {
+                                            error.message.split(',').map(err => <><strong>{err}</strong><br /></>)
+                                        }
+                                    </Form.Text>
+                                </Message>
+                            )
                         }
-                        }>Clear</Button>
-                </Col>
-                {/* <Col className='d-flex me-auto' md={2}>
-                    <Button className='ms-auto' onClick={
-                        () => exportToCSV()
-                    }>CSV</Button>
-                </Col> */}
-                <Col className='ms-auto d-flex'>
-                    <Link className='ms-auto mb-2' to="/users/new">
-                        <Button variant='secondary'>Create User</Button>
-                    </Link>
-                </Col>
-            </Row >
-            {
-                error?.code && (
-                    <Message variant='danger' className='mt-2'>
-                        <Form.Text className="text-muted">
-                            {
-                                error.message.split(',').map(err => <><strong>{err}</strong><br /></>)
-                            }
-                        </Form.Text>
-                    </Message>
+                        {
+                            message.length > 0 && (
+                                <Alert variant="info">{message}</Alert>
+                            )
+                        }
+                        {
+                            users.length === 0 ? (
+                                <Row className='text-center mt-5'>
+                                    <h4>No User Found</h4>
+                                </Row>
+                            ) : (
+                                <Row>
+                                    <EnhancedTable data={users} navigatePage={navigatePage} total={total} page={currentPage} size={pageSize}
+                                        headCells={[
+                                            {
+                                                id: 'userId',
+                                                type: 'string',
+                                                label: 'UserId',
+                                            },
+                                            {
+                                                id: 'photo',
+                                                type: 'image',
+                                                label: 'Photo',
+                                            },
+                                            {
+                                                id: 'email',
+                                                type: 'string',
+                                                label: 'Email',
+                                            },
+                                            {
+                                                id: 'firstName',
+                                                type: 'string',
+                                                label: 'First Name',
+                                            },
+                                            {
+                                                id: 'lastName',
+                                                type: 'string',
+                                                label: 'Last Name',
+                                            },
+                                            {
+                                                id: 'roles',
+                                                type: 'string',
+                                                label: 'Roles',
+                                            },
+                                            {
+                                                id: 'status',
+                                                type: 'checkbox',
+                                                label: 'Status',
+                                            },
+                                            {
+                                                id: 'management',
+                                                type: 'management',
+                                                label: '',
+                                            }
+                                        ]}
+                                    />
+                                </Row >
+                            )
+                        }
+
+                        <Modal show={show} onHide={handleModalClose}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Delete</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>Do you want to Delete a user with {targetUser.email}</Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleModalClose}>
+                                    Close
+                                </Button>
+                                <Button variant="primary" onClick={deleteUserHandler}>
+                                    Delete User
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+                    </Container>
                 )
             }
-            {
-                message.length > 0 && (
-                    <Alert variant="info">{message}</Alert>
-                )
-            }
-            {
-                users.length === 0 ? (
-                    <Row className='text-center mt-5'>
-                        <h4>No User Found</h4>
-                    </Row>
-                ) : (
-                    <Row>
-                        <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <th>UserID</th>
-                                    <th>Photo</th>
-                                    <th>
-                                        <a type="button"
-                                            onClick={() => fetchUsers(currentPage, orderBy, 'email')}
-                                        >Email</a>
-                                        {
-                                            sortBy === 'email' && (
-                                                orderBy === 'asc' ?
-                                                    (<BiSolidDownArrow
-                                                        type='button'
-                                                        onClick={() => { fetchUsers(currentPage, 'desc', 'email') }}
-                                                    />) :
-                                                    (<BiSolidUpArrow
-                                                        type='button'
-                                                        onClick={() => { fetchUsers(currentPage, 'asc', 'email') }}
-                                                    />)
-                                            )
-                                        }
-                                    </th>
-                                    <th>
-                                        <a type="button"
-                                            onClick={() => fetchUsers(currentPage, orderBy, 'firstName')}
-                                        >FirstName</a>
-                                        {
-                                            sortBy === 'firstName' && (
-                                                orderBy === 'asc' ?
-                                                    (<BiSolidDownArrow
-                                                        type='button'
-                                                        onClick={() => { fetchUsers(currentPage, 'desc', 'firstName') }}
-                                                    />) :
-                                                    (<BiSolidUpArrow
-                                                        type='button'
-                                                        onClick={() => { fetchUsers(currentPage, 'asc', 'firstName') }}
-                                                    />)
-                                            )
-                                        }
-                                    </th>
-                                    <th>LastName</th>
-                                    <th>Roles</th>
-                                    <th>Status</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    users.map(user => (
-                                        <tr key={user.id} className='align-middle'>
-                                            <td><small>{user.id}</small></td>
-                                            <td>
-                                                {
-                                                    user.photo &&
-                                                    (
-                                                        <Image width={120} thumbnail fluid src={`http://localhost:8080/user-service/photos/${user.id}/${user.photo}`} />
-                                                    )
-                                                }
-                                                {
-                                                    !user.photo && (
-                                                        <FaPortrait className='icon-sliver' size={120} />
-                                                    )
-                                                }
-                                            </td>
-                                            <td>{user.email}</td>
-                                            <td>{user.firstName}</td>
-                                            <td>{user.lastName}</td>
-                                            <td>
-                                                {
-                                                    user.roles.map(roles => roles.name)
-                                                        .map(name => (<>{name}<br /></>))
-                                                }
-                                            </td >
-                                            <td>
-                                                <RiCheckboxCircleFill
-                                                    size={24}
-                                                    color={user.status === 'ACTIVE' ? "green" : "gray"}
-                                                    onClick={() => handleActiveToggle(user)}
-                                                />
-                                            </td>
-                                            <td>
-                                                <LinkContainer to={`/users/${user.id}`}>
-                                                    <Button variant="seconary"><FaEdit size={24} /></Button>
-                                                </LinkContainer>
-                                                <TbMinusVertical />
-                                                <Button variant="seconary"
-                                                    onClick={() => {
-                                                        handleModalShow()
-                                                        setTargetUser(user)
-                                                    }}
-                                                ><MdDelete size={24} />
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </Table>
-                    </Row >
-                )
-            }
-            <Pagination className='d-flex justify-content-center'>
-                {lastPage > 5 && (
-                    <Pagination.First />
-                )}
 
-                {currentPage != 0 && (
-                    <Pagination.Prev
-                        onClick={() => navigatePage(currentPage - 1)}
-                    />
-                )}
-                {
-                    (lastPage <= 5 || currentPage <= 2) &&
-                    [...Array(lastPage > 5 ? 5 : lastPage).keys()]
-                        .map(index => (
-                            <Pagination.Item
-                                active={index === currentPage}
-                                onClick={() => navigatePage(index)}
-                            >{index + 1}</Pagination.Item>
-                        ))
-                }
-
-                {
-                    (lastPage > 5 && currentPage > 2 && lastPage - currentPage > 3) &&
-                    [...Array(5).keys()]
-                        .map(index => (
-                            <Pagination.Item
-                                active={index + currentPage - 2 === currentPage}
-                                style={{
-                                    style: "none"
-                                }}
-                                onClick={() => {
-                                    navigatePage(index + currentPage - 2)
-                                }}
-                            >{index + currentPage + 1 - 2}</Pagination.Item>
-                        ))
-                }
-
-                {
-                    (lastPage > 5 && lastPage - currentPage <= 3) &&
-                    [...Array(5).keys()]
-                        .map(index => (
-                            <Pagination.Item
-                                active={lastPage - 5 + index === currentPage}
-                                onClick={() => navigatePage(lastPage - 5 + index)}
-                            >{lastPage - 5 + index + 1}</Pagination.Item>
-                        ))
-                }
-
-                {currentPage < lastPage - 1 &&
-
-                    <Pagination.Next
-                        onClick={() => navigatePage(currentPage + 1)}
-                    />
-                }
-                {lastPage > 5 && (
-                    <Pagination.Last />
-                )}
-            </Pagination>
-            <Modal show={show} onHide={handleModalClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Delete</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Do you want to Delete a user with {targetUser.email}</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleModalClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={deleteUserHandler}>
-                        Delete User
-                    </Button>
-                </Modal.Footer>
-            </Modal>
         </>
+
+
     )
 }
 

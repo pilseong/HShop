@@ -40,7 +40,13 @@ class JwtTokenProvider {
                 mapOf(
                     "firstName" to user.firstName,
                     "lastName" to user.lastName,
-                    "roles" to user.roles.map { it.name }.joinToString(",")
+                    "roles" to user.roles.joinToString(",") { it.name },
+                    "profile" to mapOf(
+                        "id" to user.id!!.value,
+                        "firstName" to user.firstName,
+                        "lastName" to user.lastName,
+                        "photo" to user.photo
+                    )
                 )
             )
             .compact()

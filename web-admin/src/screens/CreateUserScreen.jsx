@@ -27,7 +27,7 @@ function CreateUserScreen() {
     })
 
     const [files, setFiles] = useState([])
-    const server_url = import.meta.REACT_APP_SERVER_URL
+    const server_url = import.meta.env.VITE_BASE_URL
 
     useEffect(() => {
         const fetchRoles = async () => {
