@@ -14,7 +14,8 @@ import HomeScreen from './screens/HomeScreen';
 import { Provider } from 'react-redux';
 import store from './store';
 // import 'bootstrap/dist/css/bootstrap.min.css';
-import './assets/style.css'
+// import './assets/style.css'
+import './index.css'
 import {
   createBrowserRouter,
   createRoutesFromElements,

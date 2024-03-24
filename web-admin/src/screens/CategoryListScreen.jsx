@@ -12,22 +12,26 @@ import axios from 'axios'
 import { LinkContainer } from 'react-router-bootstrap';
 import Message from '../util/Message'
 import { Link } from 'react-router-dom';
+import EnhancedTable from '../components/EnhancedTable';
+import AdminModal from '../util/AdminModal';
 
 
 function CategoryListScreen() {
 
-    const [show, setShow] = useState(false);
-    const [targetUser, setTargetUser] = useState({})
+    const [showModal, setShowModal] = useState(false);
+    const [targetCategory, setTargetCategory] = useState({})
     const [message, setMessage] = useState("")
     const [currentPage, setCurrentPage] = useState(0)
     const [lastPage, setLastPage] = useState(0)
+    const [total, setTotal] = useState(0)
+    const [pageSize, setPageSize] = useState(0)
     const [orderBy, setOrderBy] = useState('asc')
     const [sortBy, setSortBy] = useState('name')
     const [keyword, setKeyword] = useState("")
     const [cleared, setCleared] = useState(0)
 
 
-    // 유저리스트
+    // 카테고리 리스트
     const [categories, setCategories] = useState([])
     const [error, setError] = useState({
         code: "",
@@ -44,14 +48,14 @@ function CategoryListScreen() {
         fetchCategories(0)
     }, [])
 
-    const fetchCategories = async (page = 0, order = 'asc', sort = 'name') => {
+    const fetchCategories = async (page = 0, order = 'asc', sort = 'name', size = 10) => {
         try {
             const { data } = await axios.get(
                 `http://localhost:8080/catalog-service/api/categories`, {
                 params: {
                     keyword: keyword,
                     pageNo: page,
-                    pageSize: 10,
+                    pageSize: size,
                     sortBy: sort,
                     orderBy: order
                 }
@@ -66,6 +70,8 @@ function CategoryListScreen() {
             setCurrentPage(data.pageNo)
             setLastPage(data.totalPages)
             setOrderBy(order)
+            setPageSize(data.pageSize)
+            setTotal(data.totalElements)
             setSortBy(sort)
 
         } catch (error) {
@@ -117,24 +123,24 @@ function CategoryListScreen() {
     }
 
     const handleModalClose = () => {
-        setShow(false)
+        setShowModal(false)
     }
 
     const deleteUserHandler = async () => {
         try {
-            await axios.delete(`/api/categories/${targetUser.id}`)
+            await axios.delete(`/api/categories/${targetCategory.id}`)
             await fetchCategories(currentPage, orderBy, sortBy)
 
-            showMessage(`user with ${targetUser.name} has been deleted successfully`)
+            showMessage(`user with ${targetCategory.name} has been deleted successfully`)
 
         } catch (error) {
             console.log(error)
             setError(error.response.data)
         }
-        setShow(false);
+        setShowModal(false);
     }
 
-    const handleModalShow = () => setShow(true);
+    const handleModalShow = () => setShowModal(true);
 
 
     // 수정 실행 메소드
@@ -178,8 +184,8 @@ function CategoryListScreen() {
         //     // setcategories(updatedcategories)
     }
 
-    const navigatePage = (page) => {
-        fetchCategories(page, orderBy, sortBy)
+    const navigatePage = (page, size = pageSize) => {
+        fetchCategories(page, orderBy, sortBy, size)
     }
 
     const showMessage = (msg) => {
@@ -191,45 +197,34 @@ function CategoryListScreen() {
 
     }
     return (
-        <>
-            <h1 className='mb-5'>Category Lists</h1>
-            <Row className='d-flex mb-2' md={3}>
-                <Form.Group as={Col}>
-                    <Form.Control
-                        type="search"
-                        aria-describedby="search input field"
-                        placeholder='Enter keyword to search'
-                        onKeyDown={e => {
-                            if (e.key === 'Enter') {
-                                fetchCategories(0, 'asc', 'name')
-                            }
-                        }}
-                        onChange={e => {
-                            setKeyword(e.target.value)
-                        }}
-                        value={keyword}
-                    />
-                </Form.Group>
-                <Col className='d-flex me-auto' md={1}>
-                    <Button onClick={() => fetchCategories(0, 'asc', 'name')}>Search</Button>
-                    <Button className='ms-2' variant='secondary'
-                        onClick={() => {
-                            setKeyword('')
-                            setCleared(cleared + 1)
+        <div>
+            <h3 className='my-6 text-4xl'>카테고리 목록</h3>
+
+            <div className="flex gap-2">
+                <input type="text"
+                    onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                            fetchCategories(0, 'asc', 'name')
                         }
-                        }>Clear</Button>
-                </Col>
-                <Col className='d-flex me-auto' md={2}>
-                    <Button className='ms-auto' onClick={
-                        () => exportToCSV()
-                    }>CSV</Button>
-                </Col>
-                <Col className='ms-auto d-flex'>
-                    <Link className='ms-auto mb-2' to="/categories/new">
-                        <Button variant='secondary'>Create Category</Button>
-                    </Link>
-                </Col>
-            </Row >
+                    }}
+                    onChange={e => {
+                        setKeyword(e.target.value)
+                    }}
+                    value={keyword}
+                    placeholder="Enter keyword" className="bg-gray-100 p-2" />
+                <button className='btn'
+                    onClick={() => fetchCategories(0, 'asc', 'name')}
+                >Search</button>
+                <button className='btn'
+                    onClick={() => {
+                        setKeyword('')
+                        setCleared(cleared + 1)
+                    }}
+                >Clear</button>
+                <Link className='ml-auto' to="/categories/new">
+                    <button className='btn'>Create Category</button>
+                </Link>
+            </div>
             {
                 error?.code && (
                     <Message variant='danger' className='mt-2'>
@@ -248,181 +243,68 @@ function CategoryListScreen() {
             }
             {
                 categories.length === 0 ? (
-                    <Row className='text-center mt-5'>
-                        <h4>No User Found</h4>
-                    </Row>
+                    <div className='text-center mt-5'>
+                        <h4>검색 결과가 없습니다.</h4>
+                    </div>
                 ) : (
-                    <Row>
-                        <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <th>UserID</th>
-                                    <th>Image</th>
-                                    <th>
-                                        <a type="button"
-                                            onClick={() => fetchCategories(currentPage, orderBy, 'name')}
-                                        >Category Name</a>
-                                        {
-                                            sortBy === 'name' && (
-                                                orderBy === 'asc' ?
-                                                    (<BiSolidDownArrow
-                                                        type='button'
-                                                        onClick={() => { fetchCategories(currentPage, 'desc', 'name') }}
-                                                    />) :
-                                                    (<BiSolidUpArrow
-                                                        type='button'
-                                                        onClick={() => { fetchCategories(currentPage, 'asc', 'name') }}
-                                                    />)
-                                            )
-                                        }
-                                    </th>
-                                    <th>
-                                        <a type="button"
-                                            onClick={() => fetchCategories(currentPage, orderBy, 'firstName')}
-                                        >Alias</a>
-                                        {
-                                            sortBy === 'firstName' && (
-                                                orderBy === 'asc' ?
-                                                    (<BiSolidDownArrow
-                                                        type='button'
-                                                        onClick={() => { fetchCategories(currentPage, 'desc', 'firstName') }}
-                                                    />) :
-                                                    (<BiSolidUpArrow
-                                                        type='button'
-                                                        onClick={() => { fetchCategories(currentPage, 'asc', 'firstName') }}
-                                                    />)
-                                            )
-                                        }
-                                    </th>
-                                    <th>Status</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
+
+                    <div className='mt-10'>
+                        <EnhancedTable
+                            handleModalShow={handleModalShow}
+                            data={categories}
+                            navigatePage={navigatePage}
+                            total={total}
+                            page={currentPage}
+                            size={pageSize || 10}
+                            setTarget={setTargetCategory}
+                            headCells={[
                                 {
-                                    categories.map(user => (
-                                        <tr key={user.id} className='align-middle'>
-                                            <td><small>{user.id}</small></td>
-                                            <td>
-                                                {
-                                                    user.image &&
-                                                    (
-                                                        <Image width={120}
-                                                            thumbnail
-                                                            fluid
-                                                            src={`http://localhost:8080/catalog-service/photos/categories/${user.id}/${user.image}`} />
-                                                    )
-                                                }
-                                                {
-                                                    !user.image && (
-                                                        <FaPortrait className='icon-sliver' size={120} />
-                                                    )
-                                                }
-                                            </td>
-                                            <td>{user.name}</td>
-                                            <td>{user.alias}</td>
-                                            <td>{user.lastName}</td>
-                                            <td>
-                                                <RiCheckboxCircleFill
-                                                    size={24}
-                                                    color={user.status === 'ACTIVE' ? "green" : "gray"}
-                                                    onClick={() => handleActiveToggle(user)}
-                                                />
-                                            </td>
-                                            <td>
-                                                <LinkContainer to={`/categories/${user.id}`}>
-                                                    <Button variant="seconary"><FaEdit size={24} /></Button>
-                                                </LinkContainer>
-                                                <TbMinusVertical />
-                                                <Button variant="seconary"
-                                                    onClick={() => {
-                                                        handleModalShow()
-                                                        setTargetUser(user)
-                                                    }}
-                                                ><MdDelete size={24} />
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))
+                                    id: 'id',
+                                    type: 'string',
+                                    label: 'Category Id',
+                                },
+                                {
+                                    id: 'image',
+                                    type: 'image',
+                                    label: 'Photo',
+                                    path: 'http://localhost:8080/catalog-service/photos/categories/'
+                                },
+                                {
+                                    id: 'name',
+                                    type: 'string',
+                                    label: 'Category Name',
+                                },
+                                {
+                                    id: 'alias',
+                                    type: 'string',
+                                    label: 'Alias',
+                                },
+                                {
+                                    id: 'status',
+                                    type: 'checkbox',
+                                    label: 'Status',
+                                },
+                                {
+                                    id: 'management',
+                                    type: 'management',
+                                    label: '',
+                                    path: '/categories/'
                                 }
-                            </tbody>
-                        </Table>
-                    </Row >
+                            ]}
+                        />
+                    </div>
                 )
             }
-            <Pagination className='d-flex justify-content-center'>
-                {lastPage > 5 && (
-                    <Pagination.First />
-                )}
-
-                {currentPage != 0 && (
-                    <Pagination.Prev
-                        onClick={() => navigatePage(currentPage - 1)}
-                    />
-                )}
-                {
-                    (lastPage <= 5 || currentPage <= 2) &&
-                    [...Array(lastPage > 5 ? 5 : lastPage).keys()]
-                        .map(index => (
-                            <Pagination.Item key={`page-${index}`}
-                                active={index === currentPage}
-                                onClick={() => navigatePage(index)}
-                            >{index + 1}</Pagination.Item>
-                        ))
-                }
-
-                {
-                    (lastPage > 5 && currentPage > 2 && lastPage - currentPage > 3) &&
-                    [...Array(5).keys()]
-                        .map(index => (
-                            <Pagination.Item key={`page-${index}`}
-                                active={index + currentPage - 2 === currentPage}
-                                style={{
-                                    style: "none"
-                                }}
-                                onClick={() => {
-                                    navigatePage(index + currentPage - 2)
-                                }}
-                            >{index + currentPage + 1 - 2}</Pagination.Item>
-                        ))
-                }
-
-                {
-                    (lastPage > 5 && lastPage - currentPage <= 3) &&
-                    [...Array(5).keys()]
-                        .map(index => (
-                            <Pagination.Item key={`page-${index}`}
-                                active={lastPage - 5 + index === currentPage}
-                                onClick={() => navigatePage(lastPage - 5 + index)}
-                            >{lastPage - 5 + index + 1}</Pagination.Item>
-                        ))
-                }
-
-                {currentPage < lastPage - 1 &&
-
-                    <Pagination.Next
-                        onClick={() => navigatePage(currentPage + 1)}
-                    />
-                }
-                {lastPage > 5 && (
-                    <Pagination.Last />
-                )}
-            </Pagination>
-            <Modal show={show} onHide={handleModalClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Delete</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Do you want to Delete a user with {targetUser.name}</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleModalClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={deleteUserHandler}>
-                        Delete User
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </>
+            {
+                showModal &&
+                <AdminModal
+                    handleModalClose={handleModalClose}
+                    deleteHandler={deleteUserHandler}
+                    title="카테고리 삭제"
+                    content={`카테고리 ${targetCategory.name} 을 삭제하시겠습니까?`}
+                />
+            }
+        </div>
     )
 }
 

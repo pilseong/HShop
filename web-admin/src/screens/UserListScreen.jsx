@@ -1,32 +1,22 @@
 import React from 'react'
-import { Alert, Col, Form, Image, Modal, Pagination, Row, Table } from 'react-bootstrap'
+import { Alert, Form } from 'react-bootstrap'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Message from '../util/Message'
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { useGetUsersMutation } from '../slices/usersApiSlice';
-import { Button, Container, InputBase, TableContainer, TablePagination, Toolbar, Typography, styled } from '@mui/material';
-import { Box, margin } from '@mui/system';
 import EnhancedTable from '../components/EnhancedTable';
 import Loader from '../components/Loader';
-
-const Search = styled(Box)(() => ({
-    backgroundColor: "#eee",
-    padding: "0 10px",
-    borderRadius: 1,
-    width: "100%"
-}))
+import AdminModal from '../util/AdminModal'
 
 function UserListScreen() {
 
-    const [show, setShow] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [targetUser, setTargetUser] = useState({})
     const [message, setMessage] = useState("")
     const [currentPage, setCurrentPage] = useState(0)
     const [total, setTotal] = useState(0)
     const [pageSize, setPageSize] = useState(0)
-    const [lastPage, setLastPage] = useState(0)
     const [orderBy, setOrderBy] = useState('asc')
     const [sortBy, setSortBy] = useState('email')
     const [keyword, setKeyword] = useState("")
@@ -69,10 +59,9 @@ function UserListScreen() {
             }
 
             const { data } = response
-            console.log(data)
+            // console.log(data)
             setUsers(data.users)
             setCurrentPage(data.pageNo)
-            setLastPage(data.totalPages)
             setOrderBy(order)
             setPageSize(data.pageSize)
             setTotal(data.totalElements)
@@ -127,7 +116,7 @@ function UserListScreen() {
     }
 
     const handleModalClose = () => {
-        setShow(false)
+        setShowModal(false)
     }
 
     const deleteUserHandler = async () => {
@@ -145,10 +134,10 @@ function UserListScreen() {
             console.log(error)
             setError(error.response.data)
         }
-        setShow(false);
+        setShowModal(false);
     }
 
-    const handleModalShow = () => setShow(true);
+    const handleModalShow = () => setShowModal(true);
 
 
     // 수정 실행 메소드
@@ -207,47 +196,37 @@ function UserListScreen() {
 
 
     return (
-        <>
+        <div className='text-gray-600'>
             {
                 isLoading ? (<Loader />) : (
-                    <Container maxWidth="xl">
-                        <Typography variant='h3' my={3}>User Lists</Typography>
+                    <div>
+                        <h3 className='my-6 text-4xl'>관리자 목록</h3>
 
-                        <Toolbar sx={{
-                            display: "flex",
-                            justifyContent: "space-between"
-                        }}>
-                            <Box sx={{ display: "flex", flexGrow: 4 }}>
-                                <Search mr={1}>
-                                    <InputBase
-                                        onKeyDown={e => {
-                                            if (e.key === 'Enter') {
-                                                fetchUsers(0, 'asc', 'email')
-                                            }
-                                        }}
-                                        onChange={e => {
-                                            setKeyword(e.target.value)
-                                        }}
-                                        value={keyword}
-                                        placeholder='Enter keyword' />
-                                </Search>
-                                <Button size='small'
-                                    onClick={() => fetchUsers(0, 'asc', 'email')}
-                                    variant='contained' sx={{ marginRight: 1 }}>Search</Button>
-                                <Button size='small'
-                                    onClick={() => {
-                                        setKeyword('')
-                                        setCleared(cleared + 1)
-                                    }}
-                                    variant='contained'>Clear</Button>
-                            </Box>
-                            <Box sx={{ flexGrow: 6 }} textAlign={'end'}>
-                                <Link to="/users/new">
-                                    <Button size='small' variant='contained'>Create User</Button>
-                                </Link>
-                            </Box>
-
-                        </Toolbar >
+                        <div className="flex gap-2">
+                            <input type="text"
+                                onKeyDown={e => {
+                                    if (e.key === 'Enter') {
+                                        fetchUsers(0, 'asc', 'email')
+                                    }
+                                }}
+                                onChange={e => {
+                                    setKeyword(e.target.value)
+                                }}
+                                value={keyword}
+                                placeholder="Enter keyword" className="bg-gray-100 p-2" />
+                            <button className='btn'
+                                onClick={() => fetchUsers(0, 'asc', 'email')}
+                            >Search</button>
+                            <button className='btn'
+                                onClick={() => {
+                                    setKeyword('')
+                                    setCleared(cleared + 1)
+                                }}
+                            >Clear</button>
+                            <Link className='ml-auto' to="/users/new">
+                                <button className='btn'>Create User</button>
+                            </Link>
+                        </div>
 
                         {
                             error?.code && (
@@ -267,15 +246,22 @@ function UserListScreen() {
                         }
                         {
                             users.length === 0 ? (
-                                <Row className='text-center mt-5'>
-                                    <h4>No User Found</h4>
-                                </Row>
+                                <div className='text-center mt-5'>
+                                    <h4>검색 결과가 없습니다.</h4>
+                                </div>
                             ) : (
-                                <Row>
-                                    <EnhancedTable data={users} navigatePage={navigatePage} total={total} page={currentPage} size={pageSize}
+                                <div className='mt-10'>
+                                    <EnhancedTable
+                                        handleModalShow={handleModalShow}
+                                        data={users}
+                                        navigatePage={navigatePage}
+                                        total={total}
+                                        page={currentPage}
+                                        size={pageSize || 10}
+                                        setTarget={setTargetUser}
                                         headCells={[
                                             {
-                                                id: 'userId',
+                                                id: 'id',
                                                 type: 'string',
                                                 label: 'UserId',
                                             },
@@ -283,6 +269,7 @@ function UserListScreen() {
                                                 id: 'photo',
                                                 type: 'image',
                                                 label: 'Photo',
+                                                path: 'http://localhost:8080/user-service/photos/'
                                             },
                                             {
                                                 id: 'email',
@@ -313,34 +300,26 @@ function UserListScreen() {
                                                 id: 'management',
                                                 type: 'management',
                                                 label: '',
+                                                path: '/users/'
                                             }
                                         ]}
                                     />
-                                </Row >
+                                </div>
                             )
                         }
-
-                        <Modal show={show} onHide={handleModalClose}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Delete</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>Do you want to Delete a user with {targetUser.email}</Modal.Body>
-                            <Modal.Footer>
-                                <Button variant="secondary" onClick={handleModalClose}>
-                                    Close
-                                </Button>
-                                <Button variant="primary" onClick={deleteUserHandler}>
-                                    Delete User
-                                </Button>
-                            </Modal.Footer>
-                        </Modal>
-                    </Container>
+                        {
+                            showModal &&
+                            <AdminModal
+                                handleModalClose={handleModalClose}
+                                deleteHandler={deleteUserHandler}
+                                title="관리자 삭제"
+                                content={`관리자 ${targetUser.firstName} 을 삭제하시겠습니까?`}
+                            />
+                        }
+                    </div>
                 )
             }
-
-        </>
-
-
+        </div>
     )
 }
 
