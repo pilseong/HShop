@@ -15,17 +15,20 @@ import Message from '../util/Message'
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useGetCustomersMutation } from '../slices/customersApiSlice';
+import EnhancedTable from '../components/EnhancedTable';
 
 
-function UserListScreen() {
+function CustomerListScreen() {
 
-    const [show, setShow] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [targetCustomer, setTargetCustomer] = useState({})
     const [message, setMessage] = useState("")
     const [currentPage, setCurrentPage] = useState(0)
     const [lastPage, setLastPage] = useState(0)
     const [orderBy, setOrderBy] = useState('asc')
     const [sortBy, setSortBy] = useState('email')
+    const [total, setTotal] = useState(0)
+    const [pageSize, setPageSize] = useState(0)
     const [keyword, setKeyword] = useState("")
     const [cleared, setCleared] = useState(0)
 
@@ -54,12 +57,12 @@ function UserListScreen() {
     const server_url = import.meta.env.VITE_BASE_URL
 
 
-    const fetchCustomers = async (page = 0, order = 'asc', sort = 'email') => {
+    const fetchCustomers = async (page = 0, order = 'asc', sort = 'email', size = 10) => {
         try {
             const response = await getCustomers({
-                keyword: keyword,
+                query: keyword,
                 pageNo: page,
-                pageSize: 10,
+                pageSize: size,
                 sortBy: sort,
                 orderBy: order
             })
@@ -72,7 +75,8 @@ function UserListScreen() {
             console.log("customer", data.content)
             setCustomers(data.content)
             setCurrentPage(data.pageNo)
-            setLastPage(data.totalPages)
+            setPageSize(data.pageSize)
+            setTotal(data.totalElements)
             setOrderBy(order)
             setSortBy(sort)
 
@@ -125,10 +129,10 @@ function UserListScreen() {
     }
 
     const handleModalClose = () => {
-        setShow(false)
+        setShowModal(false)
     }
 
-    const deleteUserHandler = async () => {
+    const deleteCustomerHandler = async () => {
         try {
             await axios.delete(
                 `${server_url}/user-service/api/customers/${targetUser.id}`,
@@ -143,10 +147,10 @@ function UserListScreen() {
             console.log(error)
             setError(error.response.data)
         }
-        setShow(false);
+        setShowModal(false);
     }
 
-    const handleModalShow = () => setShow(true);
+    const handleModalShow = () => setShowModal(true);
 
 
     // 수정 실행 메소드
@@ -203,45 +207,46 @@ function UserListScreen() {
 
     }
     return (
-        <>
-            <h1 className='mb-5'>Customers Lists</h1>
-            <Row className='d-flex mb-2' md={3}>
-                <Form.Group as={Col}>
-                    <Form.Control
-                        type="search"
-                        aria-describedby="search input field"
-                        placeholder='Enter keyword to search'
-                        onKeyDown={e => {
-                            if (e.key === 'Enter') {
-                                fetchCustomers(0, 'asc', 'email')
-                            }
-                        }}
-                        onChange={e => {
-                            setKeyword(e.target.value)
-                        }}
-                        value={keyword}
-                    />
-                </Form.Group>
-                <Col className='d-flex me-auto' md={1}>
-                    <Button onClick={() => fetchCustomers(0, 'asc', 'email')}>Search</Button>
-                    <Button className='ms-2' variant='secondary'
-                        onClick={() => {
-                            setKeyword('')
-                            setCleared(cleared + 1)
+        <div className='text-gray-600'>
+            <h3 className='my-6 text-4xl'>고객 목록</h3>
+            <div className="flex gap-2">
+                <input type="text"
+                    onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                            fetchCustomers(0, 'asc', 'email')
                         }
-                        }>Clear</Button>
-                </Col>
-                {/* <Col className='d-flex me-auto' md={2}>
-                    <Button className='ms-auto' onClick={
-                        () => exportToCSV()
-                    }>CSV</Button>
-                </Col> */}
-                <Col className='ms-auto d-flex'>
-                    <Link className='ms-auto mb-2' to="/users/new">
-                        <Button variant='secondary'>Create User</Button>
-                    </Link>
-                </Col>
-            </Row >
+                    }}
+                    onChange={e => {
+                        setKeyword(e.target.value)
+                    }}
+                    value={keyword}
+                    placeholder="Enter keyword" className="bg-gray-100 p-2" />
+                <button className='btn'
+                    onClick={() => fetchCustomers(0, 'asc', 'email')}
+                >Search</button>
+                <button className='btn'
+                    onClick={() => {
+                        setKeyword('')
+                        setCleared(cleared + 1)
+                    }}
+                >Clear</button>
+                <Link className='ml-auto' to="/customers/new">
+                    <button className='btn'>Create Customer</button>
+                </Link>
+            </div>
+            {
+                error?.code && (
+                    <Message variant='danger' className='mt-2'>
+                        <div className="text-xs text-gray-300">
+                            {
+                                error.message
+                                    .split(',')
+                                    .map(err => <><strong>{err}</strong><br /></>)
+                            }
+                        </div>
+                    </Message>
+                )
+            }
             {
                 error?.code && (
                     <Message variant='danger' className='mt-2'>
@@ -264,166 +269,72 @@ function UserListScreen() {
                         <h4>No User Found</h4>
                     </Row>
                 ) : (
-                    <Row>
-                        <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>
-                                        <a type="button"
-                                            onClick={() => fetchCustomers(currentPage, orderBy, 'email')}
-                                        >Email</a>
-                                        {
-                                            sortBy === 'email' && (
-                                                orderBy === 'asc' ?
-                                                    (<BiSolidDownArrow
-                                                        type='button'
-                                                        onClick={() => { fetchCustomers(currentPage, 'desc', 'email') }}
-                                                    />) :
-                                                    (<BiSolidUpArrow
-                                                        type='button'
-                                                        onClick={() => { fetchCustomers(currentPage, 'asc', 'email') }}
-                                                    />)
-                                            )
-                                        }
-                                    </th>
-                                    <th>
-                                        <a type="button"
-                                            onClick={() => fetchCustomers(currentPage, orderBy, 'firstName')}
-                                        >PhoneNumber</a>
-                                        {
-                                            sortBy === 'firstName' && (
-                                                orderBy === 'asc' ?
-                                                    (<BiSolidDownArrow
-                                                        type='button'
-                                                        onClick={() => { fetchCustomers(currentPage, 'desc', 'firstName') }}
-                                                    />) :
-                                                    (<BiSolidUpArrow
-                                                        type='button'
-                                                        onClick={() => { fetchCustomers(currentPage, 'asc', 'firstName') }}
-                                                    />)
-                                            )
-                                        }
-                                    </th>
-                                    <th>State/Province</th>
-                                    <th>Country</th>
-                                    <th>Status</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    <div className='mt-10'>
+                        <EnhancedTable
+                            handleModalShow={handleModalShow}
+                            data={customers}
+                            navigatePage={navigatePage}
+                            total={total}
+                            page={currentPage}
+                            size={pageSize || 10}
+                            setTarget={setTargetCustomer}
+                            headCells={[
                                 {
-                                    customers.map(customers => (
-                                        <tr key={customers.id} className='align-middle'>
-                                            <td>{customers.firstName}</td>
-                                            <td>{customers.lastName}</td>
-                                            <td>{customers.email}</td>
-                                            <td>{customers.phoneNumber}</td>
-                                            <td>{customers.state?.name}</td>
-                                            <td>{customers.country?.name}</td>
-                                            <td>
-                                                <RiCheckboxCircleFill
-                                                    size={24}
-                                                    color={customers.status === 'ACTIVE' ? "green" : "gray"}
-                                                    onClick={() => handleActiveToggle(customers)}
-                                                />
-                                            </td>
-                                            <td>
-                                                <LinkContainer to={`/customerss/${customers.id}`}>
-                                                    <Button variant="seconary"><FaEdit size={24} /></Button>
-                                                </LinkContainer>
-                                                <TbMinusVertical />
-                                                <Button variant="seconary"
-                                                    onClick={() => {
-                                                        handleModalShow()
-                                                        setTargetCustomer(customers)
-                                                    }}
-                                                ><MdDelete size={24} />
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))
+                                    id: 'firstName',
+                                    type: 'string',
+                                    label: 'First Name',
+                                },
+                                {
+                                    id: 'lastName',
+                                    type: 'string',
+                                    label: 'Last Name',
+                                },
+                                {
+                                    id: 'email',
+                                    type: 'string',
+                                    label: 'Email',
+                                },
+                                {
+                                    id: 'phoneNumber',
+                                    type: 'string',
+                                    label: 'Phone Number',
+                                },
+                                {
+                                    id: 'state',
+                                    type: 'string',
+                                    label: 'State/Province',
+                                },
+                                {
+                                    id: 'country',
+                                    type: 'string',
+                                    label: 'Country',
+                                },
+                                {
+                                    id: 'status',
+                                    type: 'checkbox',
+                                    label: 'Status',
+                                },
+                                {
+                                    id: 'management',
+                                    type: 'management',
+                                    label: '',
+                                    path: '/brands/'
                                 }
-                            </tbody>
-                        </Table>
-                    </Row >
+                            ]}
+                        />
+                    </div>
                 )
             }
-            <Pagination className='d-flex justify-content-center'>
-                {lastPage > 5 && (
-                    <Pagination.First />
-                )}
-
-                {currentPage != 0 && (
-                    <Pagination.Prev
-                        onClick={() => navigatePage(currentPage - 1)}
-                    />
-                )}
-                {
-                    (lastPage <= 5 || currentPage <= 2) &&
-                    [...Array(lastPage > 5 ? 5 : lastPage).keys()]
-                        .map(index => (
-                            <Pagination.Item key={`page-${index}`}
-                                active={index === currentPage}
-                                onClick={() => navigatePage(index)}
-                            >{index + 1}</Pagination.Item>
-                        ))
-                }
-
-                {
-                    (lastPage > 5 && currentPage > 2 && lastPage - currentPage > 3) &&
-                    [...Array(5).keys()]
-                        .map(index => (
-                            <Pagination.Item key={`page-${index}`}
-                                active={index + currentPage - 2 === currentPage}
-                                style={{
-                                    style: "none"
-                                }}
-                                onClick={() => {
-                                    navigatePage(index + currentPage - 2)
-                                }}
-                            >{index + currentPage + 1 - 2}</Pagination.Item>
-                        ))
-                }
-
-                {
-                    (lastPage > 5 && lastPage - currentPage <= 3) &&
-                    [...Array(5).keys()]
-                        .map(index => (
-                            <Pagination.Item key={`page-${index}`}
-                                active={lastPage - 5 + index === currentPage}
-                                onClick={() => navigatePage(lastPage - 5 + index)}
-                            >{lastPage - 5 + index + 1}</Pagination.Item>
-                        ))
-                }
-
-                {currentPage < lastPage - 1 &&
-
-                    <Pagination.Next
-                        onClick={() => navigatePage(currentPage + 1)}
-                    />
-                }
-                {lastPage > 5 && (
-                    <Pagination.Last />
-                )}
-            </Pagination>
-            <Modal show={show} onHide={handleModalClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Delete</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Do you want to Delete a user with {targetCustomer.email}</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleModalClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={deleteUserHandler}>
-                        Delete User
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </>
+            {
+                showModal && <AdminModal
+                    handleModalClose={handleModalClose}
+                    deleteHandler={deleteCustomerHandler}
+                    title="고객 삭제"
+                    content={`${targetCustomer.name} 고객을 삭제하시겠습니까?`}
+                />
+            }
+        </div>
     )
 }
 
-export default UserListScreen
+export default CustomerListScreen

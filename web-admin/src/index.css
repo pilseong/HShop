@@ -9,3 +9,7 @@
 .btn {
   @apply uppercase text-xs font-bold cursor-pointer tracking-wider border-2 px-4 py-2 hover:bg-gray-600 hover:text-white;
 }
+
+.badge {
+  @apply bg-gray-100 text-gray-500 text-xs uppercase font-bold py-2 mb-1 rounded-full;
+}

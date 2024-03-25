@@ -1,0 +1,49 @@
+2024-03-25 00:11:32 [http-nio-8888-exec-7] INFO  o.s.c.c.s.e.NativeEnvironmentRepository - Adding property source: Config resource 'file [/Users/philipheur/practice/gradle/HShop/config-repo/catalog-service.yml]' via location 'file:///Users/philipheur/practice/gradle/HShop/config-repo/'
+2024-03-25 00:11:32 [http-nio-8888-exec-7] INFO  o.s.c.c.s.e.NativeEnvironmentRepository - Adding property source: Config resource 'file [/Users/philipheur/practice/gradle/HShop/config-repo/application.yml]' via location 'file:///Users/philipheur/practice/gradle/HShop/config-repo/'
+2024-03-25 00:28:50 [SpringApplicationShutdownHook] INFO  o.s.a.r.l.SimpleMessageListenerContainer - Waiting for workers to finish.
+2024-03-25 00:28:50 [SpringApplicationShutdownHook] INFO  o.s.a.r.l.SimpleMessageListenerContainer - Successfully waited for workers to finish.
+2024-03-25 00:28:50 [SpringApplicationShutdownHook] INFO  o.s.i.a.i.AmqpInboundChannelAdapter - stopped bean 'inbound.springCloudBus.anonymous.kHYuDGkaSgG0VdYUnUeVPA'
+2024-03-25 00:28:50 [SpringApplicationShutdownHook] INFO  o.s.c.s.binder.BinderErrorChannel - Channel 'configserver.rabbit-1845927081.springCloudBusInput.errors' has 1 subscriber(s).
+2024-03-25 00:28:50 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2024-03-25 00:28:50 [SpringApplicationShutdownHook] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'configserver.errorChannel' has 0 subscriber(s).
+2024-03-25 00:28:50 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean '_org.springframework.integration.errorLogger'
+2024-03-25 22:45:47 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2024-03-25 22:45:47 [main] INFO  n.p.h.configserver.ConfigServerKt - Starting ConfigServerKt using Java 17.0.10 with PID 81309 (/Volumes/mac-mini-ext/practice/gradle/HShop/config-server/build/classes/kotlin/main started by philipheur in /Volumes/mac-mini-ext/practice/gradle/HShop)
+2024-03-25 22:45:47 [main] INFO  n.p.h.configserver.ConfigServerKt - The following 1 profile is active: "native"
+2024-03-25 22:45:48 [main] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2024-03-25 22:45:48 [main] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2024-03-25 22:45:48 [main] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=68d1ae5d-d69d-3db6-9bb2-3460219a38b0
+2024-03-25 22:45:49 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8888 (http)
+2024-03-25 22:45:49 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8888"]
+2024-03-25 22:45:49 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-03-25 22:45:49 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2024-03-25 22:45:49 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-03-25 22:45:49 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1325 ms
+2024-03-25 22:45:49 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 2 endpoint(s) beneath base path '/actuator'
+2024-03-25 22:45:49 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@6ef4297d, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4c000cc4, org.springframework.security.web.context.SecurityContextHolderFilter@5724c7da, org.springframework.security.web.header.HeaderWriterFilter@21698e5a, org.springframework.web.filter.CorsFilter@6c36051c, org.springframework.security.web.authentication.logout.LogoutFilter@3a1a0bc, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@13662609, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5814b4fb, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3aca2579, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@45d46254, org.springframework.security.web.access.ExceptionTranslationFilter@9f48198, org.springframework.security.web.access.intercept.AuthorizationFilter@7252bdb]
+2024-03-25 22:45:49 [main] WARN  o.s.b.a.t.ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2024-03-25 22:45:50 [main] INFO  o.s.c.s.m.DirectWithAttributesChannel - Channel 'configserver.springCloudBusInput' has 1 subscriber(s).
+2024-03-25 22:45:50 [main] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2024-03-25 22:45:50 [main] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'configserver.errorChannel' has 1 subscriber(s).
+2024-03-25 22:45:50 [main] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean '_org.springframework.integration.errorLogger'
+2024-03-25 22:45:50 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8888"]
+2024-03-25 22:45:50 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8888 (http) with context path ''
+2024-03-25 22:45:50 [main] INFO  o.s.c.s.binder.DefaultBinderFactory - Creating binder: rabbit
+2024-03-25 22:45:50 [main] INFO  o.s.c.s.binder.DefaultBinderFactory - Constructing binder child context for rabbit
+2024-03-25 22:45:50 [main] INFO  o.s.c.s.binder.DefaultBinderFactory - Caching the binder: rabbit
+2024-03-25 22:45:50 [main] INFO  o.s.c.s.b.r.p.RabbitExchangeQueueProvisioner - declaring queue for inbound: springCloudBus.anonymous.-N8ycQrQSOGjLAqS1q4ERQ, bound to: springCloudBus
+2024-03-25 22:45:50 [main] INFO  o.s.a.r.c.CachingConnectionFactory - Attempting to connect to: [192.168.50.141:5672]
+2024-03-25 22:45:50 [main] INFO  o.s.a.r.c.CachingConnectionFactory - Created new connection: rabbitConnectionFactory#1cfd6f63:0/SimpleConnection@775a5a67 [delegate=amqp://guest@192.168.50.141:5672/, localPort=55123]
+2024-03-25 22:45:51 [main] INFO  o.s.c.s.binder.BinderErrorChannel - Channel 'rabbit-255102480.springCloudBusInput.errors' has 1 subscriber(s).
+2024-03-25 22:45:51 [main] INFO  o.s.c.s.binder.BinderErrorChannel - Channel 'rabbit-255102480.springCloudBusInput.errors' has 2 subscriber(s).
+2024-03-25 22:45:51 [main] INFO  o.s.i.a.i.AmqpInboundChannelAdapter - started bean 'inbound.springCloudBus.anonymous.-N8ycQrQSOGjLAqS1q4ERQ'
+2024-03-25 22:45:51 [main] INFO  n.p.h.configserver.ConfigServerKt - Started ConfigServerKt in 3.586 seconds (process running for 3.985)
+2024-03-25 22:46:07 [http-nio-8888-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-03-25 22:46:07 [http-nio-8888-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-03-25 22:46:07 [http-nio-8888-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2024-03-25 22:46:07 [http-nio-8888-exec-2] INFO  o.s.c.c.s.e.NativeEnvironmentRepository - Adding property source: Config resource 'file [/Users/philipheur/practice/gradle/HShop/config-repo/gateway-service.yml]' via location 'file:///Users/philipheur/practice/gradle/HShop/config-repo/'
+2024-03-25 22:46:07 [http-nio-8888-exec-2] INFO  o.s.c.c.s.e.NativeEnvironmentRepository - Adding property source: Config resource 'file [/Users/philipheur/practice/gradle/HShop/config-repo/application.yml]' via location 'file:///Users/philipheur/practice/gradle/HShop/config-repo/'
+2024-03-25 22:46:14 [http-nio-8888-exec-3] INFO  o.s.c.c.s.e.NativeEnvironmentRepository - Adding property source: Config resource 'file [/Users/philipheur/practice/gradle/HShop/config-repo/catalog-service.yml]' via location 'file:///Users/philipheur/practice/gradle/HShop/config-repo/'
+2024-03-25 22:46:14 [http-nio-8888-exec-3] INFO  o.s.c.c.s.e.NativeEnvironmentRepository - Adding property source: Config resource 'file [/Users/philipheur/practice/gradle/HShop/config-repo/application.yml]' via location 'file:///Users/philipheur/practice/gradle/HShop/config-repo/'
+2024-03-25 22:46:34 [http-nio-8888-exec-4] INFO  o.s.c.c.s.e.NativeEnvironmentRepository - Adding property source: Config resource 'file [/Users/philipheur/practice/gradle/HShop/config-repo/user-service.yml]' via location 'file:///Users/philipheur/practice/gradle/HShop/config-repo/'
+2024-03-25 22:46:34 [http-nio-8888-exec-4] INFO  o.s.c.c.s.e.NativeEnvironmentRepository - Adding property source: Config resource 'file [/Users/philipheur/practice/gradle/HShop/config-repo/application.yml]' via location 'file:///Users/philipheur/practice/gradle/HShop/config-repo/'
